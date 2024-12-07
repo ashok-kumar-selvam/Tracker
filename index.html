@@ -1,12 +1,126 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title> Tracker Application </title>
-  </head>
-  <body>
-    <main>
-      <h1> Wellcome to tracker application </h1>
+<head>
+  <title>Data Entry Form</title>
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxvKg7C9DNhm3lkjSuY5W9svItfMAbjgC0xTRhMDPmS9M0yX_HwRxh16aof0DkIIzU/exec";
+
+    // Function to handle form submission
+    async function submitForm() {
+      // Get form data
+      const date = document.getElementById("date").value;
+      const category = document.getElementById("category").value;
+      const amount = document.getElementById("amount").value;
+      const type = document.getElementById("type").value;
+
+      // Check if all fields are filled
+      if (!date || !category || !amount || !type) {
+        updateMessage('Please fill all the fields.', 'error');
+        return;
+      }
+
+      // Create an object to hold the form data
+      const formData = {
+        date: date,
+        category: category,
+        amount: parseFloat(amount).toFixed(2), // Ensure two decimal places
+        type: type
+      };
+
+      try {
+        // Send data to Google Apps Script Web App
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        if (result.status === "success") {
+          updateMessage('Success! Data saved.', 'success');
+          document.getElementById("dataForm").reset();
+          document.getElementById("date").focus();
+        } else {
+          throw new Error(result.message || 'Unknown error occurred');
+        }
+      } catch (error) {
+        updateMessage('Error: ' + error.message, 'error');
+      }
+    }
+
+    // Function to update the live message for screen readers
+    function updateMessage(message, type) {
+      const messageElement = document.getElementById("messageArea");
+      messageElement.textContent = message;
+      messageElement.setAttribute('aria-live', 'polite');
       
-    </  main>
+      // Change message color based on success or error
+      if (type === 'success') {
+        messageElement.style.color = 'green';
+      } else if (type === 'error') {
+        messageElement.style.color = 'red';
+      }
+    }
+
+    // Function to update the message while typing
+    function updateTypingMessage() {
+      updateMessage('Typing...', 'info');
+    }
+
+    // Set the initial date value to today and focus on the date field when the page loads
+    window.onload = function() {
+      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      document.getElementById("date").value = today;  // Set the date input to today
+      document.getElementById("date").focus();  // Focus on the date field
+    };
+  </script>
+</head>
+<body>
+  <main>
+    <div>
+      <h1>Data Entry Form</h1>
+      
+      <form id="dataForm" oninput="updateTypingMessage()">
+        <div>
+          <label for="date">Date:</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <div>
+          <label for="category">Category:</label>
+          <select id="category" required>
+            <option value="">Select Category</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Health">Health</option>
+            <option value="Medical">Medical</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="amount">Amount:</label>
+          <input type="number" id="amount" step="0.01" min="0" required>
+        </div>
+
+        <div>
+          <label for="type">Payment Type:</label>
+          <select id="type" required>
+            <option value="">Select Type</option>
+            <option value="Creditcard">Credit Card</option>
+            <option value="bankaccount">Bank Account</option>
+            <option value="cash">Cash</option>
+          </select>
+        </div>
+
+        <div>
+          <button type="button" onclick="submitForm()">Submit</button>
+        </div>
+      </form>
+    </div>
+    <div id="messageArea" aria-live="polite"></div>
+  </main>
 </body>
 </html>
