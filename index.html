@@ -31,8 +31,9 @@
         // Send data to Google Apps Script Web App
         const response = await fetch(WEB_APP_URL, {
           method: "POST",
+          redirect: "follow",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "text/plain;charset=utf8"
           },
           body: JSON.stringify(formData)
         });
