@@ -20,6 +20,7 @@
         
         // Populate the summary
         document.getElementById("totalAmount").textContent = `Total Amount This Month: ₹${data.totalAmountThisMonth.toFixed(2)}`;
+        document.getElementById("averageAmount").textContent = `average amount per date: ${data.averageAmount}`;
 
         // Populate category summary
         const categoryTable = document.getElementById("categoryTable");
@@ -66,6 +67,7 @@ console.log('the date value is ', row[0]);
   <div class="summary">
     <h2>Overview</h2>
     <p id="totalAmount"></p>
+    <p id="averageAmount"> </p>
   </div>
 
   <div class="summary">
