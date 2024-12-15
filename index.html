@@ -39,6 +39,7 @@
         const lastFiveTable = document.getElementById("lastFiveTable");
         for (const row of data.lastFiveData) {
           const tableRow = lastFiveTable.insertRow();
+console.log('the date value is ', row[0]);
           tableRow.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>₹${row[2].toFixed(2)}</td><td>${row[3]}</td>`;
         }
       } catch (error) {
