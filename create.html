@@ -90,10 +90,10 @@
     <div>
       <h1>Data Entry Form</h1>
       
-      <form id="dataForm" oninput="updateTypingMessage()">
+      <form id="dataForm" >
         <div>
           <label for="date">Date:</label>
-          <input type="date" id="date" required>
+          <input type="date" id="date" required oninput="() => updateMessage(this.value, 'success')">
         </div>
 
         <div>
